@@ -1,17 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// @ts-check
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+import '../assets/application.scss';
+
+// import faker from 'faker';
+import gon from 'gon';
+// import cookies from 'js-cookie';
+// import io from 'socket.io-client';
+
+if (process.env.NODE_ENV !== 'production') {
+  localStorage.debug = 'chat:*';
+}
+
+console.log('it works!');
+console.log('gon', gon)
