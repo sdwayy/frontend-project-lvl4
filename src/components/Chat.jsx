@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import routes from '../routes';
 import userContext from '../context';
+import { Formik, Form, Field } from 'formik';
+import { Button, FormGroup } from 'react-bootstrap';
+
 
 const sendMessage = async (attributes) => {
   const { currentChannelId } = attributes;
@@ -15,36 +18,60 @@ const sendMessage = async (attributes) => {
   }
 };
 
-export default function Chat() {
-  const inputRef = useRef(null);
+const InnerForm = (props) => {
+  const inputRef = useRef();
+  const { nickname, currentChannelId } = props;
 
-  const messagesData = useSelector((state) => {
+  const submitHandler = () => {
+    const body = inputRef.current.value;
+    sendMessage({ nickname, currentChannelId, body });
+  };
+  
+  const initialValues = {
+    message: '',
+  };
+
+  return (
+    <Formik 
+      initialValues={initialValues}
+      onSubmit={submitHandler}
+    >
+      <Form>
+        <FormGroup className='d-flex'>
+          <Field 
+            className='form-control mr-2' 
+            name='message' 
+            id='message'
+            innerRef={inputRef}
+          />
+          <Button type='submit'>Submit</Button>
+        </FormGroup>
+      </Form>
+    </Formik>
+  )
+};
+
+export default function Chat() {
+  const nickname = useContext(userContext);
+  
+  const { currentChannelId, messages } = useSelector((state) => {
     const { currentChannelId } = state.channelsInfo;
     const { messages } = state.messagesInfo;
 
     return { currentChannelId, messages };
   });
 
-  const { currentChannelId, messages } = messagesData;
-  const nickname = useContext(userContext);
+  const messagesElements = messages
+    .filter((message) => message.channelId === currentChannelId)
+    .map((message, i) => {
+      const { body } = message;
 
-  const messagesElements = messages.map((message, i) => {
-    const { body } = message;
-
-    return (
-      <div key={i}>
-        <b>{nickname}</b>: {body}
-      </div>
-    );
+      return (
+        <div key={i}>
+          <b>{nickname}</b>: {body}
+        </div>
+      );
   });
-
-  const submitHandler = (evt) => {
-    evt.preventDefault();
-
-    const body = inputRef.current.value;
-
-    sendMessage({ nickname, currentChannelId, body });
-  };
 
   return (
     <div className='col h-100'>
@@ -53,27 +80,7 @@ export default function Chat() {
           { messages.length > 0 && messagesElements }
         </div>
         <div className='mt-auto'>
-          <form noValidate onSubmit={submitHandler}>
-            <div className='form-group'>
-              <div className='input-group'>
-                <input 
-                  ref={inputRef}
-                  className='mr-2 form-control' 
-                  name='body' 
-                  aria-label='body'
-                >
-                </input>
-                <button 
-                  aria-label='submit'
-                  type='submit'
-                  className='btn btn-primary'
-                >
-                  Submit
-                </button>
-                <div className='d-block invalid-feedback'>&nbsp;</div>
-              </div>
-            </div>
-          </form>
+          <InnerForm nickname={nickname} currentChannelId={currentChannelId} />
         </div>
       </div>
     </div>

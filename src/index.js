@@ -15,6 +15,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import App from './components/App';
 import rootReducer from './slices/index';
 import { addMessage } from './slices/messages';
+import { newChannel, removeChannel, renameChannel } from './slices/channels';
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
@@ -42,7 +43,11 @@ const store = configureStore({
 });
 
 const socket = io();
-socket.on('newMessage', () => store.dispatch(addMessage));
+
+socket.on('newMessage', (data) => store.dispatch(addMessage(data)));
+socket.on('newChannel', (data) => store.dispatch(newChannel(data)));
+socket.on('removeChannel', (data) => store.dispatch(removeChannel(data)));
+socket.on('renameChannel', (data) => store.dispatch(renameChannel(data)));
 
 render(
   <Provider store={store}>
