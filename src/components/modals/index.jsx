@@ -13,9 +13,9 @@ export default function ModalComponent() {
 
   const getModal = (modalType) => {
     const typeMap = {
-      'addChannel': AddChannel,
-      'removeChannel': RemoveChannel,
-      'renameChannel': RenameChannel,
+      addChannel: AddChannel,
+      removeChannel: RemoveChannel,
+      renameChannel: RenameChannel,
     };
 
     return typeMap[modalType]();
@@ -34,4 +34,4 @@ export default function ModalComponent() {
       { getModal(type) }
     </Modal>
   );
-};
+}

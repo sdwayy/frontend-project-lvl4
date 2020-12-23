@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { omit } from 'lodash';
 import { removeChannel } from './channels';
@@ -18,8 +19,8 @@ const messagesSlice = createSlice({
     [removeChannel]: (state, action) => {
       const { payload: { data: { id } } } = action;
       state.messages = state.messages.filter((message) => id !== message.channelId);
-    }
-  }
+    },
+  },
 });
 
 export const { addMessage } = messagesSlice.actions;

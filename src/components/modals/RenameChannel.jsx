@@ -1,16 +1,15 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import routes from '../../routes';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import {
+  Formik, Form, Field, ErrorMessage,
+} from 'formik';
+import {
+  Modal, Button, FormGroup,
+} from 'react-bootstrap';
 import cn from 'classnames';
 import * as Yup from 'yup';
-
-import {
-  Modal,
-  Button,
-  FormGroup
-} from 'react-bootstrap';
+import routes from '../../routes';
 
 import { closeModal } from '../../slices/modal';
 
@@ -52,7 +51,7 @@ const InnerForm = () => {
       .notOneOf(channelsNames, 'Must be uniq')
       .required('This field is reqiered')
       .min(3, 'Min name length is 3')
-      .max(20, 'Max name length is 20')
+      .max(20, 'Max name length is 20'),
   });
 
   return (
@@ -63,33 +62,33 @@ const InnerForm = () => {
     >
       {(formik) => (
         <Form>
-          <Field 
+          <Field
             className={cn({
               'mb-2': true,
               'form-control': true,
               'is-invalid': !formik.isValid,
             })}
-            name='name'
-            id='name'
+            name="name"
+            id="name"
             innerRef={inputRef}
           />
           <ErrorMessage
-            component='span'
-            className='mb-2 text-danger' 
-            name='name' 
+            component="span"
+            className="mb-2 text-danger"
+            name="name"
           />
-          <FormGroup className='d-flex justify-content-end'>
-            <Button 
-              className='mr-2' 
-              variant='secondary' 
-              type='reset' 
+          <FormGroup className="d-flex justify-content-end">
+            <Button
+              className="mr-2"
+              variant="secondary"
+              type="reset"
               onClick={cancelHandler}
             >
               Cancel
             </Button>
-            <Button 
-              variant='primary' 
-              type='submit'
+            <Button
+              variant="primary"
+              type="submit"
             >
               Submit
             </Button>
@@ -97,7 +96,7 @@ const InnerForm = () => {
         </Form>
       )}
     </Formik>
-  )
+  );
 };
 
 export default function RenameChannel() {

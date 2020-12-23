@@ -7,10 +7,10 @@ import cookies from 'js-cookie';
 import io from 'socket.io-client';
 
 import React from 'react';
-import userContext from './context';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import userContext from './context';
 
 import App from './components/App';
 import rootReducer from './slices/index';
@@ -33,11 +33,11 @@ const initialState = {
     currentChannelId: gon.currentChannelId,
   },
   messagesInfo: {
-    messages: gon.messages
+    messages: gon.messages,
   },
 };
 
-const store = configureStore({ 
+const store = configureStore({
   reducer: rootReducer,
   preloadedState: initialState,
 });
@@ -55,5 +55,5 @@ render(
       <App />
     </userContext.Provider>
   </Provider>,
-  document.querySelector('.container')
+  document.querySelector('.container'),
 );
