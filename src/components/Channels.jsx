@@ -19,6 +19,7 @@ const NotRemovableChannel = (options) => {
   return (
     <Nav.Link
       className={cn({
+        btn: true,
         'btn-block': true,
         'mb-2': true,
         'text-left': true,
