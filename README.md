@@ -2,8 +2,6 @@
 ***
 # Simple chat 
 *Supported auto-update and the ability to add, remove, rename channels*
-## Tech stack:
-
 Techs  | Services
 ------------- | -------------
 React  | Rollbar
