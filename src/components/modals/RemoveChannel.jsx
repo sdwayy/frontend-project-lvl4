@@ -15,12 +15,16 @@ export default function RemoveChannelModal() {
     dispatch(closeModal());
   };
 
-  const submitHandler = (evt) => {
+  const submitHandler = async (evt) => {
     evt.preventDefault();
 
-    const url = routes.channelPath(channelId);
+    try {
+      const url = routes.channelPath(channelId);
+      await axios.delete(url);
+    } catch (error) {
+      console.log('ERROR: ', error.message);
+    }
 
-    axios.delete(url);
     dispatch(closeModal());
   };
 

@@ -1,17 +1,13 @@
 import React, { useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import * as Yup from 'yup';
+import cn from 'classnames';
 import {
   Formik, Form, Field, ErrorMessage,
 } from 'formik';
-import * as Yup from 'yup';
-import cn from 'classnames';
-
 import {
-  Modal,
-  FormGroup,
-  Button,
+  Modal, FormGroup, Button,
 } from 'react-bootstrap';
-
 import axios from 'axios';
 import routes from '../../routes';
 import { closeModal } from '../../slices/modal';
@@ -19,29 +15,33 @@ import { closeModal } from '../../slices/modal';
 const InnerForm = () => {
   const dispatch = useDispatch();
   const inputRef = useRef();
+  const channelsNames = useSelector((state) => state.channelsInfo.channels
+    .map((channel) => channel.name));
 
   useEffect(() => {
     inputRef.current.focus();
   }, []);
 
-  const initialValues = {
-    name: '',
-  };
-
   const validationSchema = Yup.object({
     name: Yup
       .string()
       .required('This field is reqiered')
+      .notOneOf(channelsNames, 'Must be uniq')
       .min(3, 'Min name length is 3')
       .max(20, 'Max name length is 20'),
   });
 
-  const submitHandler = (values) => {
+  const submitHandler = async (values) => {
     const { name } = values;
-    const url = routes.channelsPath();
     const attributes = { name };
 
-    axios.post(url, { data: { attributes } });
+    try {
+      const url = routes.channelsPath();
+      await axios.post(url, { data: { attributes } });
+    } catch (error) {
+      console.log('ERROR: ', error.message);
+    }
+
     dispatch(closeModal());
   };
 
@@ -49,7 +49,7 @@ const InnerForm = () => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{ name: '' }}
       validationSchema={validationSchema}
       onSubmit={submitHandler}
     >
@@ -59,7 +59,7 @@ const InnerForm = () => {
             className={cn({
               'mb-2': true,
               'form-control': true,
-              'is-invalid': !formik.isValid,
+              'is-invalid': formik.touched.name && !formik.isValid,
             })}
             name="name"
             id="name"
@@ -79,10 +79,7 @@ const InnerForm = () => {
             >
               Cancel
             </Button>
-            <Button
-              variant="primary"
-              type="submit"
-            >
+            <Button variant="primary" type="submit">
               Submit
             </Button>
           </FormGroup>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-
 import Channels from './Channels';
 import Chat from './Chat';
 import Modal from './modals/index';

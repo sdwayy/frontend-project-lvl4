@@ -1,77 +1,77 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import {
-  ButtonGroup,
-  Dropdown,
-  Nav,
-  Button,
+  ButtonGroup, Dropdown, Nav, Button,
 } from 'react-bootstrap';
 import { swapChannel } from '../slices/channels';
 import { showModal } from '../slices/modal';
 
-const NotRemovableChannel = (options) => {
+const Channel = (props) => {
   const dispatch = useDispatch();
-  const { name, isActive, id } = options;
+  const {
+    options: {
+      name, isActive, id, removable,
+    },
+  } = props;
 
-  const clickHandler = () => dispatch(swapChannel(id));
-
-  return (
-    <Nav.Link
-      className={cn({
-        btn: true,
-        'btn-block': true,
-        'mb-2': true,
-        'text-left': true,
-        'btn-primary': isActive,
-        'btn-light': !isActive,
-      })}
-      onClick={clickHandler}
-      as="button"
-    >
-      {name}
-    </Nav.Link>
+  const clickHandler = useCallback(
+    () => dispatch(swapChannel(id)),
+    [id],
   );
-};
 
-const RemovableChannel = (options) => {
-  const dispatch = useDispatch();
-  const { isActive, name, id } = options;
+  const removeHandler = useCallback(
+    () => dispatch(showModal({
+      type: 'removeChannel',
+      extra: { channelId: id },
+    })),
+    [id],
+  );
 
-  const clickHandler = () => dispatch(swapChannel(id));
+  const renameHandler = useCallback(
+    () => dispatch(showModal({
+      type: 'renameChannel',
+      extra: { channelId: id },
+    })),
+    [id],
+  );
 
-  const removeHandler = (channelId) => () => dispatch(showModal({
-    type: 'removeChannel',
-    extra: { channelId },
-  }));
-
-  const renameHandler = (channelId) => () => dispatch(showModal({
-    type: 'renameChannel',
-    extra: { channelId },
-  }));
-
-  return (
-    <Dropdown as={ButtonGroup} className="mb-2 d-flex">
-      <Button
-        variant={isActive ? 'primary' : 'light'}
-        className="text-left flex-grow-1"
+  return !removable
+    ? (
+      <Nav.Link
+        className={cn({
+          'w-100': true,
+          'text-left': true,
+          btn: true,
+          'btn-primary': isActive,
+          'btn-light': !isActive,
+        })}
+        as="button"
         onClick={clickHandler}
       >
         {name}
-      </Button>
-
-      <Dropdown.Toggle
-        split
-        variant={isActive ? 'primary' : 'light'}
-        className="flex-grow-0"
-      />
-
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={removeHandler(id)}>Remove</Dropdown.Item>
-        <Dropdown.Item onClick={renameHandler(id)}>Rename</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-  );
+      </Nav.Link>
+    )
+    : (
+      <Dropdown as={ButtonGroup} className="mb-2 d-flex">
+        <Button
+          variant={isActive ? 'primary' : 'light'}
+          className="text-left flex-grow-1"
+          onClick={clickHandler}
+        >
+          {name}
+        </Button>
+        <Dropdown.Toggle
+          split
+          variant={isActive ? 'primary' : 'light'}
+          className="flex-grow-0"
+        />
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={removeHandler}>Remove</Dropdown.Item>
+          <Dropdown.Item onClick={renameHandler}>Rename</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
 };
 
 export default function Channels() {
@@ -83,9 +83,11 @@ export default function Channels() {
 
     return (
       <Nav.Item id={id} key={id} as="li">
-        {removable
-          ? RemovableChannel({ name, isActive, id })
-          : NotRemovableChannel({ name, isActive, id })}
+        <Channel
+          options={{
+            name, id, removable, isActive,
+          }}
+        />
       </Nav.Item>
     );
   });

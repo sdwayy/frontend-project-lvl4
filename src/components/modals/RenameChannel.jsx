@@ -10,7 +10,6 @@ import {
 import cn from 'classnames';
 import * as Yup from 'yup';
 import routes from '../../routes';
-
 import { closeModal } from '../../slices/modal';
 
 const InnerForm = () => {
@@ -34,15 +33,16 @@ const InnerForm = () => {
 
   const submitHandler = (values) => {
     const { name } = values;
-    const url = routes.channelPath(channelId);
     const attributes = { name };
 
-    axios.patch(url, { data: { attributes } });
-    dispatch(closeModal());
-  };
+    try {
+      const url = routes.channelPath(channelId);
+      axios.patch(url, { data: { attributes } });
+    } catch (error) {
+      console.log('ERROR: ', error.message);
+    }
 
-  const initialValues = {
-    name: currentChannelName,
+    dispatch(closeModal());
   };
 
   const validationSchema = Yup.object({
@@ -56,7 +56,7 @@ const InnerForm = () => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{ name: currentChannelName }}
       validationSchema={validationSchema}
       onSubmit={submitHandler}
     >
@@ -66,7 +66,7 @@ const InnerForm = () => {
             className={cn({
               'mb-2': true,
               'form-control': true,
-              'is-invalid': !formik.isValid,
+              'is-invalid': formik.touched.name && !formik.isValid,
             })}
             name="name"
             id="name"

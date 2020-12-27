@@ -29,10 +29,11 @@ const buildState = (defaultState) => {
 
 export default (app, io, defaultState = {}) => {
   const state = buildState(defaultState);
+  const rollbarToken = '19e9fde8edfb41e885aedadb0aefdeb4';
 
   app
     .get('/', (_req, reply) => {
-      reply.view('index.pug', { gon: state });
+      reply.view('index.pug', { gon: { ...state, rollbarToken } });
     })
     .get('/api/v1/channels', (_req, reply) => {
       const resources = state.channels.map((c) => ({
