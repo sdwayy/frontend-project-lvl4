@@ -42,6 +42,7 @@ const Channel = (props) => {
         className={cn({
           'w-100': true,
           'text-left': true,
+          'mb-2': true,
           btn: true,
           'btn-primary': isActive,
           'btn-light': !isActive,
