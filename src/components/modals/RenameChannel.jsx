@@ -31,13 +31,13 @@ const InnerForm = () => {
     dispatch(closeModal());
   };
 
-  const submitHandler = (values) => {
+  const submitHandler = async (values) => {
     const { name } = values;
     const attributes = { name };
 
     try {
       const url = routes.channelPath(channelId);
-      axios.patch(url, { data: { attributes } });
+      await axios.patch(url, { data: { attributes } });
     } catch (error) {
       console.log('ERROR: ', error.message);
     }
