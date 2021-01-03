@@ -2,7 +2,7 @@
 ***
 # Simple chat 
 *Supported auto-update and the ability to add, remove, rename channels*
-Techs  | Services
+Techs && Libs  | Services
 ------------- | -------------
 React  | Rollbar
 Redux-toolkit  | Heroku
