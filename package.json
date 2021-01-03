@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "bin": {
-    "slack": "dist/bin/slack.js"
+    "app": "dist/bin/app.js"
   },
   "engines": {
     "node": ">= 13"
@@ -13,7 +13,7 @@
     "build-server": "babel server --out-dir dist --source-maps inline && cp -r server/views dist/views",
     "build-app": "npx webpack --env production",
     "build": "npm run build-app && npm run build-server",
-    "start": " dist/bin/slack.js",
+    "start": " dist/bin/app.js",
     "postinstall": "npm run build"
   },
   "dependencies": {
