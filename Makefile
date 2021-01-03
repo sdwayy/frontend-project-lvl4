@@ -1,4 +1,4 @@
-setup: install-deps
+install: install-deps
 
 run:
 	heroku local -f Procfile.dev
