@@ -2,12 +2,14 @@
   "name": "frontend-project-lvl4",
   "version": "0.1.0",
   "private": true,
+  "main": "src/init.jsx",
   "bin": {
-    "app": "dist/bin/slack.js"
+    "slack": "dist/bin/slack.js"
   },
   "engines": {
     "node": ">= 13"
   },
+  "type": "module",
   "scripts": {
     "test": "jest",
     "build-server": "babel server --out-dir dist --source-maps inline && cp -r server/views dist/views",
