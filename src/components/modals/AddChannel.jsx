@@ -25,7 +25,8 @@ const InnerForm = () => {
   const validationSchema = Yup.object({
     name: Yup
       .string()
-      .required('This field is reqiered')
+      .trim()
+      .required('Please input a channel name')
       .notOneOf(channelsNames, 'Must be uniq')
       .min(3, 'Min name length is 3')
       .max(20, 'Max name length is 20'),
@@ -33,7 +34,7 @@ const InnerForm = () => {
 
   const submitHandler = async (values) => {
     const { name } = values;
-    const attributes = { name };
+    const attributes = { name: name.trim() };
 
     try {
       const url = routes.channelsPath();
