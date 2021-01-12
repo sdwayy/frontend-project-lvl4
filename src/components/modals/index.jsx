@@ -20,9 +20,7 @@ export default function ModalComponent() {
     return typeMap[modalType]();
   };
 
-  const hideModalHandler = () => {
-    dispatch(closeModal());
-  };
+  const hideModalHandler = () => dispatch(closeModal());
 
   return (
     <Modal

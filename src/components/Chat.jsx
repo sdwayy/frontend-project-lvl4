@@ -25,14 +25,14 @@ const InnerForm = () => {
   }));
 
   const submitHandler = useCallback(
-    (values, formikBag) => {
+    async (values, formikBag) => {
       const { message } = values;
       const { resetForm } = formikBag;
 
-      sendMessage({ nickname, currentChannelId, body: message.trim() });
+      await sendMessage({ nickname, currentChannelId, body: message.trim() });
       resetForm();
     },
-    [currentChannelId],
+    [currentChannelId, nickname],
   );
 
   const validationSchema = Yup.object({
@@ -49,7 +49,7 @@ const InnerForm = () => {
       validationSchema={validationSchema}
       validateOnMount
     >
-      {(formik) => (
+      {({ isSubmitting, isValid }) => (
         <Form>
           <FormGroup className="d-flex">
             <Field
@@ -60,7 +60,7 @@ const InnerForm = () => {
             />
             <Button
               type="submit"
-              disabled={!formik.isValid}
+              disabled={!isValid || isSubmitting}
             >
               Submit
             </Button>

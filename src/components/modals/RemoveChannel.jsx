@@ -10,9 +10,7 @@ const InnerForm = () => {
   const dispatch = useDispatch();
   const channelId = useSelector((state) => state.modal.extra.channelId);
 
-  const closeModalHandler = () => {
-    dispatch(closeModal());
-  };
+  const closeModalHandler = () => dispatch(closeModal());
 
   const submitHandler = async () => {
     try {

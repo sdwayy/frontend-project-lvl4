@@ -27,9 +27,7 @@ const InnerForm = () => {
     inputRef.current.select();
   }, []);
 
-  const cancelHandler = () => {
-    dispatch(closeModal());
-  };
+  const cancelHandler = () => dispatch(closeModal());
 
   const submitHandler = async (values) => {
     const { name } = values;
@@ -60,13 +58,13 @@ const InnerForm = () => {
       validationSchema={validationSchema}
       onSubmit={submitHandler}
     >
-      {(formik) => (
+      {({ touched, isValid }) => (
         <Form>
           <Field
             className={cn({
               'mb-2': true,
               'form-control': true,
-              'is-invalid': formik.touched.name && !formik.isValid,
+              'is-invalid': touched.name && !isValid,
             })}
             name="name"
             id="name"

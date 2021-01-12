@@ -1,16 +1,19 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
+const DEFAULT_ACTIVE_CHANNEL_ID = 1;
+
 const channelsSlice = createSlice({
   name: 'channelsInfo',
   initialState: {
     channels: [],
-    currentChannelId: 1,
+    currentChannelId: DEFAULT_ACTIVE_CHANNEL_ID,
   },
   reducers: {
     newChannel: (state, action) => {
       const { payload: { data: { attributes } } } = action;
       state.channels.push(attributes);
+      state.currentChannelId = attributes.id;
     },
 
     swapChannel: (state, action) => {
@@ -21,6 +24,7 @@ const channelsSlice = createSlice({
     removeChannel: (state, action) => {
       const { payload: { data: { id } } } = action;
       state.channels = state.channels.filter((channel) => channel.id !== id);
+      state.currentChannelId = DEFAULT_ACTIVE_CHANNEL_ID;
     },
 
     renameChannel: (state, action) => {

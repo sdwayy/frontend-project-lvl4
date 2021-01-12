@@ -15,10 +15,7 @@ const Channel = (props) => {
     },
   } = props;
 
-  const clickHandler = useCallback(
-    () => dispatch(swapChannel(id)),
-    [id],
-  );
+  const clickHandler = useCallback(() => dispatch(swapChannel(id)), [id]);
 
   const removeHandler = useCallback(
     () => dispatch(showModal({
@@ -93,9 +90,7 @@ export default function Channels() {
     );
   });
 
-  const addChannelHandler = () => {
-    dispatch(showModal({ type: 'addChannel' }));
-  };
+  const addChannelHandler = () => dispatch(showModal({ type: 'addChannel' }));
 
   return (
     <div className="col-3 border-right">
