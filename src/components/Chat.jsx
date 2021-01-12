@@ -1,5 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import axios from 'axios';
+import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import { Button, FormGroup } from 'react-bootstrap';
@@ -28,27 +29,44 @@ const InnerForm = () => {
       const { message } = values;
       const { resetForm } = formikBag;
 
-      sendMessage({ nickname, currentChannelId, body: message });
+      sendMessage({ nickname, currentChannelId, body: message.trim() });
       resetForm();
     },
     [currentChannelId],
   );
 
+  const validationSchema = Yup.object({
+    message: Yup
+      .string()
+      .trim()
+      .required('Please input a message'),
+  });
+
   return (
     <Formik
       initialValues={{ message: '' }}
       onSubmit={submitHandler}
+      validationSchema={validationSchema}
+      validateOnMount
     >
-      <Form>
-        <FormGroup className="d-flex">
-          <Field
-            className="form-control mr-2"
-            name="message"
-            id="message"
-          />
-          <Button type="submit">Submit</Button>
-        </FormGroup>
-      </Form>
+      {(formik) => (
+        <Form>
+          <FormGroup className="d-flex">
+            <Field
+              className="form-control mr-2"
+              name="message"
+              id="message"
+              placeholder="Input you're message"
+            />
+            <Button
+              type="submit"
+              disabled={!formik.isValid}
+            >
+              Submit
+            </Button>
+          </FormGroup>
+        </Form>
+      )}
     </Formik>
   );
 };
@@ -65,7 +83,7 @@ export default function Chat() {
     return { currentChannelId, currentMessages };
   });
 
-  const { currentChannelId, currentMessages } = channelData;
+  const { currentMessages } = channelData;
 
   const messagesElements = currentMessages.map((message) => {
     const { body, id } = message;
@@ -86,7 +104,7 @@ export default function Chat() {
           { currentMessages.length > 0 && messagesElements }
         </div>
         <div className="mt-auto">
-          <InnerForm nickname={nickname} currentChannelId={currentChannelId} />
+          <InnerForm />
         </div>
       </div>
     </div>
