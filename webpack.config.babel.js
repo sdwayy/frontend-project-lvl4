@@ -17,10 +17,6 @@ module.exports = {
     path: `${__dirname}/dist/public`,
     publicPath: '/assets/',
   },
-  devServer: {
-    publicPath: '/assets/',
-    compress: true,
-  },
   plugins: [
     new MiniCssExtractPlugin(),
   ],
