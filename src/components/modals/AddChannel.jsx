@@ -32,8 +32,7 @@ const InnerForm = () => {
       .max(20, 'Max name length is 20'),
   });
 
-  const submitHandler = async (values) => {
-    const { name } = values;
+  const submitHandler = async ({ name }) => {
     const attributes = { name: name.trim() };
 
     try {

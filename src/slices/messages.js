@@ -9,15 +9,15 @@ const messagesSlice = createSlice({
     messages: [],
   },
   reducers: {
-    addMessage: (state, action) => {
-      const { attributes } = action.payload.data;
+    addMessage: (state, { payload }) => {
+      const { data: { attributes } } = payload;
       const message = omit(attributes, 'currentChannelId');
       state.messages.push(message);
     },
   },
   extraReducers: {
-    [removeChannel]: (state, action) => {
-      const { payload: { data: { id } } } = action;
+    [removeChannel]: (state, { payload }) => {
+      const { data: { id } } = payload;
       state.messages = state.messages.filter((message) => id !== message.channelId);
     },
   },

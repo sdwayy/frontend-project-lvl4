@@ -29,8 +29,7 @@ const InnerForm = () => {
 
   const cancelHandler = () => dispatch(closeModal());
 
-  const submitHandler = async (values) => {
-    const { name } = values;
+  const submitHandler = async ({ name }) => {
     const attributes = { name };
 
     try {

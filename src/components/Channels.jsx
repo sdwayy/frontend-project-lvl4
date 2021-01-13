@@ -7,13 +7,11 @@ import {
 import { swapChannel } from '../slices/channels';
 import { showModal } from '../slices/modal';
 
-const Channel = (props) => {
+const Channel = ({ options }) => {
   const dispatch = useDispatch();
   const {
-    options: {
-      name, isActive, id, removable,
-    },
-  } = props;
+    name, isActive, id, removable,
+  } = options;
 
   const clickHandler = useCallback(() => dispatch(swapChannel(id)), [id]);
 
