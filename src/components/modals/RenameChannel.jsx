@@ -45,6 +45,7 @@ const InnerForm = () => {
   const validationSchema = Yup.object({
     name: Yup
       .string()
+      .trim()
       .notOneOf(channelsNames, 'Must be uniq')
       .required('This field is reqiered')
       .min(3, 'Min name length is 3')
