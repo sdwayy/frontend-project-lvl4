@@ -17,7 +17,7 @@ const InnerForm = () => {
       const url = routes.channelPath(channelId);
       await axios.delete(url);
     } catch (error) {
-      console.log('ERROR: ', error.message);
+      console.log('Channel remove error: ', error.message);
     }
 
     dispatch(closeModal());

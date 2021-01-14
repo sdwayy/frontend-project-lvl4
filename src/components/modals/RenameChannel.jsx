@@ -36,7 +36,7 @@ const InnerForm = () => {
       const url = routes.channelPath(channelId);
       await axios.patch(url, { data: { attributes } });
     } catch (error) {
-      console.log('ERROR: ', error.message);
+      console.log('Error when renaming a channel: ', error.message);
     }
 
     dispatch(closeModal());

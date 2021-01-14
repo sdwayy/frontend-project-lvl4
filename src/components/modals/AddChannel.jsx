@@ -39,7 +39,7 @@ const InnerForm = () => {
       const url = routes.channelsPath();
       await axios.post(url, { data: { attributes } });
     } catch (error) {
-      console.log('ERROR: ', error.message);
+      console.log('Error when adding channel: ', error.message);
     }
 
     dispatch(closeModal());

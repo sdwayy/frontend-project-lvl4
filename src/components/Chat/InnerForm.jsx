@@ -1,22 +1,21 @@
 import axios from 'axios';
 import * as Yup from 'yup';
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useRef } from 'react';
+import cn from 'classnames';
 import { useSelector } from 'react-redux';
-import { Formik, Form, Field } from 'formik';
+import {
+  Formik, Form, Field, ErrorMessage,
+} from 'formik';
 import { Button, FormGroup } from 'react-bootstrap';
 import routes from '../../routes';
 import userContext from '../../context';
 
-const sendMessage = async (attributes) => {
-  const { currentChannelId } = attributes;
-
-  try {
-    const url = routes.channelMessagesPath(currentChannelId);
-    await axios.post(url, { data: { attributes } });
-  } catch (err) {
-    console.log('ERROR: ', err);
-  }
-};
+const validationSchema = Yup.object({
+  message: Yup
+    .string()
+    .trim()
+    .required('Please input a message'),
+});
 
 export default function InnerForm() {
   const { nickname, currentChannelId } = useSelector((state) => ({
@@ -24,47 +23,61 @@ export default function InnerForm() {
     nickname: useContext(userContext),
   }));
 
-  const submitHandler = useCallback(
-    async (values, formikBag) => {
-      const { message } = values;
-      const { resetForm } = formikBag;
+  const inputRef = useRef();
 
-      await sendMessage({ nickname, currentChannelId, body: message.trim() });
-      resetForm();
+  const submitHandler = useCallback(
+    async ({ message }, { resetForm, setFieldError }) => {
+      try {
+        const url = routes.channelMessagesPath(currentChannelId);
+        const attributes = {
+          nickname,
+          currentChannelId,
+          body: message.trim(),
+        };
+
+        await axios.post(url, { data: { attributes } });
+        resetForm();
+      } catch (error) {
+        setFieldError('message', error.message);
+      }
+      inputRef.current.focus();
     },
     [currentChannelId],
   );
-
-  const validationSchema = Yup.object({
-    message: Yup
-      .string()
-      .trim()
-      .required('Please input a message'),
-  });
 
   return (
     <Formik
       initialValues={{ message: '' }}
       onSubmit={submitHandler}
       validationSchema={validationSchema}
-      validateOnMount
+      validateOnBlur={false}
     >
-      {({ isSubmitting, isValid }) => (
+      {({ isSubmitting, isValid, touched }) => (
         <Form>
           <FormGroup className="d-flex">
             <Field
-              className="form-control mr-2"
+              className={cn({
+                'form-control': true,
+                'mr-2': true,
+                'is-invalid': !isValid && touched.message,
+              })}
               name="message"
               id="message"
               placeholder="Input you're message"
+              innerRef={inputRef}
             />
             <Button
               type="submit"
-              disabled={!isValid || isSubmitting}
+              disabled={isSubmitting}
             >
               Submit
             </Button>
           </FormGroup>
+          <ErrorMessage
+            component="span"
+            className="ml-1 text-danger"
+            name="message"
+          />
         </Form>
       )}
     </Formik>

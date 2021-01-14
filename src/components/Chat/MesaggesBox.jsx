@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 export default function MessagesBox() {
@@ -7,6 +7,13 @@ export default function MessagesBox() {
     const { messages } = state.messagesInfo;
 
     return messages.filter((message) => message.channelId === currentChannelId);
+  });
+
+  const messageBoxRef = useRef();
+
+  useEffect(() => {
+    const messageBox = messageBoxRef.current;
+    messageBox.scrollTop = messageBox.scrollHeight;
   });
 
   const messagesElements = currentMessages.map(({ body, id, nickname }) => (
@@ -18,7 +25,11 @@ export default function MessagesBox() {
   ));
 
   return (
-    <div className="chat-messages overflow-auto mb-3" id="messages-box">
+    <div
+      className="chat-messages overflow-auto mb-3"
+      id="messages-box"
+      ref={messageBoxRef}
+    >
       { currentMessages.length > 0 && messagesElements }
     </div>
   );
