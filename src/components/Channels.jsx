@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import {
@@ -7,29 +7,22 @@ import {
 import { swapChannel } from '../slices/channels';
 import { showModal } from '../slices/modal';
 
-const Channel = ({ options }) => {
+const Channel = ({
+  name, isActive, id, removable,
+}) => {
   const dispatch = useDispatch();
-  const {
-    name, isActive, id, removable,
-  } = options;
 
-  const clickHandler = useCallback(() => dispatch(swapChannel(id)), [id]);
+  const clickHandler = () => dispatch(swapChannel({ id }));
 
-  const removeHandler = useCallback(
-    () => dispatch(showModal({
-      type: 'removeChannel',
-      extra: { channelId: id },
-    })),
-    [id],
-  );
+  const removeHandler = () => dispatch(showModal({
+    type: 'removeChannel',
+    extra: { channelId: id },
+  }));
 
-  const renameHandler = useCallback(
-    () => dispatch(showModal({
-      type: 'renameChannel',
-      extra: { channelId: id },
-    })),
-    [id],
-  );
+  const renameHandler = () => dispatch(showModal({
+    type: 'renameChannel',
+    extra: { channelId: id },
+  }));
 
   return !removable
     ? (
@@ -79,11 +72,7 @@ export default function Channels() {
 
     return (
       <Nav.Item id={id} key={id} as="li">
-        <Channel
-          options={{
-            name, id, removable, isActive,
-          }}
-        />
+        <Channel name={name} id={id} removable={removable} isActive={isActive} />
       </Nav.Item>
     );
   });
@@ -103,7 +92,7 @@ export default function Channels() {
         </Button>
       </div>
       <Nav className="flex-column" variant="pills" fill as="ul">
-        {channels.length > 0 && channelsElements}
+        {channelsElements}
       </Nav>
     </div>
   );

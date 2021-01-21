@@ -29,34 +29,40 @@ const InnerForm = () => {
 
   const cancelHandler = () => dispatch(closeModal());
 
-  const submitHandler = async ({ name }) => {
-    const attributes = { name };
-
-    try {
-      const url = routes.channelPath(channelId);
-      await axios.patch(url, { data: { attributes } });
-    } catch (error) {
-      console.log('Error when renaming a channel: ', error.message);
-    }
-
-    dispatch(closeModal());
-  };
-
-  const validationSchema = Yup.object({
+  const mainValidationSchema = Yup.object({
     name: Yup
       .string()
       .trim()
       .notOneOf(channelsNames, 'Must be uniq')
-      .required('This field is reqiered')
       .min(3, 'Min name length is 3')
       .max(20, 'Max name length is 20'),
   });
 
+  const submitValidationShema = Yup.string().required();
+
+  const submitHandler = async ({ name }, { setFieldError }) => {
+    const attributes = { name };
+
+    if (!submitValidationShema.isValidSync(name)) {
+      setFieldError('name', 'required');
+      return;
+    }
+
+    try {
+      const url = routes.channelPath(channelId);
+      await axios.patch(url, { data: { attributes } });
+      dispatch(closeModal());
+    } catch (error) {
+      setFieldError('name', error.message);
+    }
+  };
+
   return (
     <Formik
       initialValues={{ name: currentChannelName }}
-      validationSchema={validationSchema}
+      validationSchema={mainValidationSchema}
       onSubmit={submitHandler}
+      validateOnBlur={false}
     >
       {({ touched, isValid }) => (
         <Form>

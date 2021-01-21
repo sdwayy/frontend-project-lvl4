@@ -11,6 +11,7 @@ import {
 import axios from 'axios';
 import routes from '../../routes';
 import { closeModal } from '../../slices/modal';
+import { swapChannel } from '../../slices/channels';
 
 const InnerForm = () => {
   const dispatch = useDispatch();
@@ -22,27 +23,34 @@ const InnerForm = () => {
     inputRef.current.focus();
   }, []);
 
-  const validationSchema = Yup.object({
+  const mainValidationSchema = Yup.object({
     name: Yup
       .string()
       .trim()
-      .required('Please input a channel name')
       .notOneOf(channelsNames, 'Must be uniq')
       .min(3, 'Min name length is 3')
       .max(20, 'Max name length is 20'),
   });
 
-  const submitHandler = async ({ name }) => {
+  const submitValidationShema = Yup.string().required();
+
+  const submitHandler = async ({ name }, { setFieldError }) => {
     const attributes = { name: name.trim() };
+
+    if (!submitValidationShema.isValidSync(name)) {
+      setFieldError('name', 'required');
+      return;
+    }
 
     try {
       const url = routes.channelsPath();
-      await axios.post(url, { data: { attributes } });
-    } catch (error) {
-      console.log('Error when adding channel: ', error.message);
-    }
+      const { data: response } = await axios.post(url, { data: { attributes } });
 
-    dispatch(closeModal());
+      dispatch(closeModal());
+      dispatch(swapChannel({ id: response.data.id }));
+    } catch (error) {
+      setFieldError('name', error.message);
+    }
   };
 
   const cancelHandler = () => dispatch(closeModal());
@@ -50,8 +58,9 @@ const InnerForm = () => {
   return (
     <Formik
       initialValues={{ name: '' }}
-      validationSchema={validationSchema}
+      validationSchema={mainValidationSchema}
       onSubmit={submitHandler}
+      validateOnBlur={false}
     >
       {({ touched, isValid }) => (
         <Form>

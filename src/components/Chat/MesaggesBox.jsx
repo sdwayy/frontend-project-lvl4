@@ -17,7 +17,7 @@ export default function MessagesBox() {
   });
 
   const messagesElements = currentMessages.map(({ body, id, nickname }) => (
-    <div key={id}>
+    <div className="text-break" key={id}>
       <b>{nickname}</b>
       :
       {body}

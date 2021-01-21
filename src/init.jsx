@@ -1,7 +1,5 @@
 import cookies from 'js-cookie';
 import faker from 'faker';
-import gon from 'gon';
-import io from 'socket.io-client';
 
 import React from 'react';
 import { render } from 'react-dom';
@@ -13,15 +11,15 @@ import userContext from './context';
 import rootReducer from './slices/index';
 import App from './components/App';
 import { addMessage } from './slices/messages';
-import { newChannel, removeChannel, renameChannel } from './slices/channels';
+import { createChannel, removeChannel, renameChannel } from './slices/channels';
 
-export default function init() {
+export default function init(initialState, socketClient) {
   if (!cookies.get('userName')) {
     cookies.set('userName', `${faker.internet.userName()}`);
   }
 
   const rollbar = new Rollbar({
-    accessToken: gon.rollbarToken,
+    accessToken: initialState.rollbarToken,
     captureUncaught: true,
     captureUnhandledRejections: true,
   });
@@ -32,20 +30,19 @@ export default function init() {
     reducer: rootReducer,
     preloadedState: {
       channelsInfo: {
-        channels: gon.channels,
-        currentChannelId: gon.currentChannelId,
+        channels: initialState.channels,
+        currentChannelId: initialState.currentChannelId,
       },
       messagesInfo: {
-        messages: gon.messages,
+        messages: initialState.messages,
       },
     },
   });
 
-  const socket = io();
-  socket.on('newMessage', (data) => store.dispatch(addMessage(data)));
-  socket.on('newChannel', (data) => store.dispatch(newChannel(data)));
-  socket.on('removeChannel', (data) => store.dispatch(removeChannel(data)));
-  socket.on('renameChannel', (data) => store.dispatch(renameChannel(data)));
+  socketClient.on('newMessage', (data) => store.dispatch(addMessage(data)));
+  socketClient.on('newChannel', (data) => store.dispatch(createChannel(data)));
+  socketClient.on('removeChannel', (data) => store.dispatch(removeChannel(data)));
+  socketClient.on('renameChannel', (data) => store.dispatch(renameChannel(data)));
 
   render(
     <Provider store={store}>

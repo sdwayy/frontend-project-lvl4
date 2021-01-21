@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as Yup from 'yup';
-import React, { useContext, useCallback, useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
 import {
@@ -25,25 +25,22 @@ export default function InnerForm() {
 
   const inputRef = useRef();
 
-  const submitHandler = useCallback(
-    async ({ message }, { resetForm, setFieldError }) => {
-      try {
-        const url = routes.channelMessagesPath(currentChannelId);
-        const attributes = {
-          nickname,
-          currentChannelId,
-          body: message.trim(),
-        };
+  const submitHandler = async ({ message }, { resetForm, setFieldError }) => {
+    try {
+      const url = routes.channelMessagesPath(currentChannelId);
+      const attributes = {
+        nickname,
+        currentChannelId,
+        body: message.trim(),
+      };
 
-        await axios.post(url, { data: { attributes } });
-        resetForm();
-      } catch (error) {
-        setFieldError('message', error.message);
-      }
-      inputRef.current.focus();
-    },
-    [currentChannelId],
-  );
+      await axios.post(url, { data: { attributes } });
+      resetForm();
+    } catch (error) {
+      setFieldError('message', error.message);
+    }
+    inputRef.current.focus();
+  };
 
   return (
     <Formik
